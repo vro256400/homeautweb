@@ -42,7 +42,6 @@ sudo apt install npm
 
 npx shadcn@latest init
 
-npm run dev - it is to run project
 Tailwind CSS IntelliSense - it is extension
 Trunk Code Quality - it is extension
 npx shadcn@latest add button
@@ -56,3 +55,7 @@ npx shadcn@latest add dialog
 npx shadcn@latest add input
 npm install axios
 
+
+to run
+npm install
+npm run dev

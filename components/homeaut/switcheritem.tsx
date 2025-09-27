@@ -259,7 +259,14 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
 
             {valueMode == "schedule" && ( 
               <div>
-                <Button className="w-full" onClick={() => { alert("alert test"); }}>+</Button>
+                <Button className="w-full" onClick={() => 
+                  { 
+                    let newrange : string[] = [ "00:00", "00:00" ];
+                    config.ranges.push(newrange);
+                    let rowIndex = config.ranges.length - 1;
+                    let range = config.ranges[rowIndex];
+                    setChangeCounter(changeCounter + 1);
+                  }}>+</Button>
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -283,8 +290,6 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
                             }}>-
                           </Button>
             
-                                
-                          
                         </TableCell>
                         <TableCell key="edit">
                          
@@ -301,8 +306,6 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
                     ))}
                   </TableBody>
                 </Table>
-                
-                
                 
               </div>
             )}
