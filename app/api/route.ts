@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import HomeAutService from '@/services/home.service';
 
 export async function GET() {
-    const res = await fetch('http://192.168.1.2:8080/HomeAut/lsdev')
+    const res = await fetch(process.env.NEXT_PUBLIC_HA_API_SERVER + 'HomeAut/lsdev')
     const data = await res.text()
     const index: number = data.indexOf("\n"); 
     var devicesText  = "";

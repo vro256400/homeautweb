@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card"
 
 async function postNewConfig(config: string): Promise<any> {
-  const url = 'http://192.168.1.2:8080/HomeAut/scfgdevs';
+  var url = process.env.NEXT_PUBLIC_HA_API_SERVER + "HomeAut/scfgdevs"
   
   alert(config);
 
@@ -29,6 +29,7 @@ async function postNewConfig(config: string): Promise<any> {
     body: "cfg=" + config
   };
 
+  alert(process.env.NEXT_PUBLIC_HA_API_SERVER)
   try {
     const response = await fetch(url, options);
 
