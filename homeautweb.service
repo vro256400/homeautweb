@@ -1,0 +1,14 @@
+[Unit]
+Description=Home Automation Web
+After=network.target
+
+[Service]
+Environment="PORT=4000"
+WorkingDirectory=/home/service/bin/homeautweb
+ExecStart=npm run dev
+Restart=always
+User=user	
+Group=user
+
+[Install]
+WantedBy=multi-user.target
