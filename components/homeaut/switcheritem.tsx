@@ -252,7 +252,7 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
           
             {valueMode == "manual" && ( 
               <div className="flex items-center space-x-2">
-                <Switch id={config.switchname} data-state={config.on ? "checked" : "unchecked"} onCheckedChange={(m : any) => { config.on=m;  callback_data(config, switch_inndex); }}/>
+                <Switch id={config.switchname} checked={config.on} onCheckedChange={(m : any) => { config.on=m; callback_data(config, switch_inndex); handleChange("onoff"); }}/>
                 <Label htmlFor="airplane-mode">Manual on</Label>
               </div>
             )}

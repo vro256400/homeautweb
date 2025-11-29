@@ -1,4 +1,4 @@
-"use client"; // This directive marks the file as a Client Component
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import axios from 'axios'
@@ -17,28 +17,22 @@ import {
 async function postNewConfig(config: string): Promise<any> {
   var url = process.env.NEXT_PUBLIC_HA_API_SERVER + "HomeAut/scfgdevs"
   
-  alert(config);
-
-  
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'text/plain',
     },
-    //body: "cfg=" + JSON.stringify(config)
     body: "cfg=" + config
   };
 
-  alert(process.env.NEXT_PUBLIC_HA_API_SERVER)
   try {
-    const response = await fetch(url, options);
-
+    const response = await fetch('./api', options);
     if (!response.ok) {
       // Handle HTTP errors (e.g., 404, 500)
       const errorData = await response.json();
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
     }
-
+    
     const result = await response.json();
     return result;
   } catch (error) {
@@ -48,7 +42,6 @@ async function postNewConfig(config: string): Promise<any> {
 }
 
 function MyClientComponent() {
-//  var devices : DevicesDTO = []
   const [data, setData] = useState("");
 
   useEffect(() => {
@@ -62,7 +55,7 @@ function MyClientComponent() {
       }
     };
     fetchData();
-  }, []); // Empty dependency array for fetching once on mount
+  }, []);
 
   if (data.length == 0)
     return (
