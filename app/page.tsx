@@ -72,9 +72,9 @@ function MyClientComponent() {
   }
 
   return (
-        <div>
+        <div align="center">
           {parsedObject.map((item : any, devIndex : number) => (
-            <li key={item.name}>
+            <div key={item.name}>
               <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle>{item.name}</CardTitle>
@@ -88,10 +88,11 @@ function MyClientComponent() {
                   </Button>
                 </CardFooter>
               </Card>
-            </li>
+              <br/>
+            </div>
           ))}
 
-        <br/><br/><br/><br/>
+        <br/><br/><br/>Debug data from the server<br/>
          {data}
         </div>);
 }

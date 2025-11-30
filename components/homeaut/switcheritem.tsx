@@ -249,7 +249,7 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
         </CardHeader> 
         <CardContent>
             <ComboboxSwitcherMode mode={valueMode} onChange={(m : any) => { config.mode = m; setMode(m); }}/>
-          
+            <div><br/></div>
             {valueMode == "manual" && ( 
               <div className="flex items-center space-x-2">
                 <Switch id={config.switchname} checked={config.on} onCheckedChange={(m : any) => { config.on=m; callback_data(config, switch_inndex); handleChange("onoff"); }}/>
