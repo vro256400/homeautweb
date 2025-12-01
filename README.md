@@ -32,5 +32,5 @@ Look service status:
 http://myhost:4000 or http://myhost:3000 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vro256400/homeautweb/main/readme/page.jpg" alt="MicroPython Logo"/>
+  <img src="https://raw.githubusercontent.com/vro256400/homeautweb/main/readme/page.jpg" alt="Page with two devices"/>
 </p>
