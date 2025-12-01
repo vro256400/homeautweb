@@ -2,7 +2,7 @@
     sudo apt install nodejs npm
 
 ## Prepare repository to run
-Execute following command in repository folder after clone once only:
+Execute following command in repository folder after clone once only
     npm install
     
 ## Use following command in repository folder to run in console
