@@ -1,3 +1,5 @@
+Tested for Linux, should work for Windows
+
 # Install for Debian 13, Raspbarry PI
 
 ## Install additional packets on OS
