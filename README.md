@@ -1,36 +1,36 @@
+# Install for Debian 13, Raspbarry PI
 
-## Learn More
+## Install additional packets on OS
+    
+    sudo apt install nodejs npm
 
+## Prepare repository to run
+Execute following command in repository folder after clone once only:
 
-## Deploy on Vercel
+    npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Configuration
+Edit file .env.local and edit IP of your PW server
+    
+## Use following command in repository folder to run in console(for test only, use next section to autorun)
+Developer mode
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    npm run dev
 
-https://www.youtube.com/watch?v=0OaDyjB9Ib8
+## Autorun
+In the repository folder
 
-sudo apt install nodejs
-sudo apt install npm
+    sudo cp ./homeautweb.service /etc/systemd/system/
+    sudo systemctl enable homeautweb
+    sudo systemctl start homeautweb
 
-npx shadcn@latest init
+Look service status:
 
-Tailwind CSS IntelliSense - it is extension
-Trunk Code Quality - it is extension
-ESLint
+    systemctl status homeautweb
 
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add switch                       
-npx shadcn@latest add label
-npx shadcn@latest add popover
-npx shadcn@latest add command
-npx shadcn@latest add table
-npx shadcn@latest add dialog
-npx shadcn@latest add input
-npm install axios
+## Look page
+http://myhost:4000 or http://myhost:3000 
 
-
-## to run
-npm install
-npm run dev
+<p align="center">
+  <img src="https://raw.githubusercontent.com/vro256400/homeautweb/main/readme/page.jpg" alt="Page with two devices"/>
+</p>
