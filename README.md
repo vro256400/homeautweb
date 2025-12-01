@@ -1,17 +1,20 @@
-
-## Learn More
-
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-
+## Install for Debian 13, Raspbarry PI
     sudo apt install nodejs npm
 
-
-## to run
+## Prepare repository to run
+Execute following command in repository folder after clone once only:
     npm install
+    
+## Use following command in repository folder to run in console
     npm run dev
+
+## Autorun
+In the repository folder
+    sudo cp ./homeautweb.service /etc/systemd/system/
+    sudo systemctl enable homeautweb
+    sudo systemctl start homeautweb
+Look service status:
+    systemctl status homeautweb
+
+## Look page
+http://myhost:4000
