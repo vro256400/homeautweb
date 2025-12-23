@@ -13,7 +13,8 @@ export async function GET() {
         if (answerResult == "OK")
         {
             devicesText = data.substring(index + 1, data.length)
-            console.log(`devicesText: ${devicesText}`);
+            console.error('received from PW:', devicesText);
+//            console.log(`devicesText: ${devicesText}`);
         }
     }
 
@@ -23,6 +24,8 @@ export async function GET() {
 export async function POST(request: Request) 
 {
     const textBody = await request.text();
+
+    console.error('Send to PW(POST body):', textBody);
 
     var url = process.env.NEXT_PUBLIC_HA_API_SERVER + "HomeAut/scfgdevs"
     const options: RequestInit = {

@@ -4,6 +4,9 @@ import Image from "next/image";
 import axios from 'axios'
 import React, { useState, useEffect } from 'react';
 import DeviceSwitcher from "@/components/homeaut/switcher"
+import Chickencoop from "@/components/homeaut/chickencoop"
+import { parseUnivConfig } from "@/components/homeaut/univconfig"
+//import postNewConfig from "@/components/homeaut/api"
 import {
   Card,
   CardAction,
@@ -14,32 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-async function postNewConfig(config: string): Promise<any> {
-  var url = process.env.NEXT_PUBLIC_HA_API_SERVER + "HomeAut/scfgdevs"
-  
-  const options: RequestInit = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain',
-    },
-    body: "cfg=" + config
-  };
 
-  try {
-    const response = await fetch('./api', options);
-    if (!response.ok) {
-      // Handle HTTP errors (e.g., 404, 500)
-      const errorData = await response.json();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
-    }
-    
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error('Error creating post:', error);
-    throw error; // Re-throw to allow further handling
-  }
-}
 
 function MyClientComponent() {
   const [data, setData] = useState("");
@@ -76,24 +54,16 @@ function MyClientComponent() {
           {parsedObject.map((item : any, devIndex : number) => (
             <div key={item.name}>
               <Card className="w-full max-w-sm">
-                <CardHeader>
-                    <CardTitle>{item.name}</CardTitle>
-                </CardHeader>      
-                {item.type == "switcher" && <DeviceSwitcher config={JSON.stringify(item.config)} devname={item.name} devindex={devIndex} callback_data={callback}/> }
-                <CardFooter className="flex-col gap-2">
-                  <Button type="submit" className="w-full" onClick={() => { 
-                                      postNewConfig(JSON.stringify(parsedObject));
-                                                                          }}>
-                    Apply
-                  </Button>
-                </CardFooter>
+
+                {item.type == "chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
+                
               </Card>
               <br/>
             </div>
           ))}
 
-        <br/><br/><br/>Debug data from the server<br/>
-         {data}
+          <br/><br/><br/>Debug data from the server<br/>
+          {data}
         </div>);
 }
 

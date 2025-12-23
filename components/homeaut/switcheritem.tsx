@@ -57,6 +57,7 @@ import { Input } from "@/components/ui/input"
 
 export type SwitcherItemCallback = (data: SwitcherItemDTO, switchInndex : number) => void;
 
+/*
 interface SwitcherItemProps {
   config: SwitcherItemDTO;
   callback_data : SwitcherItemCallback;  
@@ -66,23 +67,7 @@ interface SwitcherItemProps {
 interface SwitcherItemState {
   count: number;
 }
-
-interface ModeProps {
-  mode: string;
-  onChange(value: string): void;
-}
-
-const modes = [
-  {
-    value: "manual",
-    label: "manual",
-  },
-  {
-    value: "schedule",
-    label: "schedule",
-  }
-];
-
+*/
 interface RangeProps {
   start: string;
   stop : string;
@@ -175,6 +160,23 @@ function DialogEditRange({start, stop, index, onChange} : RangeProps) {
   )
 }
 
+
+interface ModeProps {
+  mode: string;
+  onChange(value: string): void;
+}
+
+const modes = [
+  {
+    value: "manual",
+    label: "manual",
+  },
+  {
+    value: "schedule",
+    label: "schedule",
+  }
+];
+
 function ComboboxSwitcherMode({ mode, onChange }: ModeProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(mode)
@@ -230,7 +232,7 @@ function ComboboxSwitcherMode({ mode, onChange }: ModeProps) {
     
   )
 }
-
+/*
 function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProps)
 {
     const [valueMode, setMode] = React.useState(config.mode)
@@ -316,5 +318,132 @@ function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProp
       </div>
     );
 }
+
+export default SwitcherItem;
+*/
+
+import UnivValue from "@/components/homeaut/univconfigval"
+
+interface SwitcherItemProps {
+  switcher_name : string;
+  config: Map<string, UnivValue>;
+}
+
+function SwitcherItem({switcher_name, config}: SwitcherItemProps)
+{
+    let keyMode = switcher_name + "_mode";
+    let keyOn =  switcher_name + "_on";
+    let keyStartH = switcher_name + "_startH";
+    let keyStartM = switcher_name + "_startM";
+    let keyStopH = switcher_name + "_stopH";
+    let keyStopM = switcher_name + "_stopM";
+    const [valueMode, setMode] = React.useState(config.get(keyMode).values[0])
+    const [changeCounter, setChangeCounter] = React.useState(0)
+    const handleChange = async (event : any) => {
+      setChangeCounter(changeCounter + 1);
+    };
+
+    const getStartTime = (index : number) => {
+      return config.get(keyStartH)?.values[index] + ":" + config.get(keyStartM)?.values[index];
+    };
+    
+    const getStopTime = (index : number) => {
+      return config.get(keyStopH)?.values[index] + ":" + config.get(keyStopM)?.values[index];
+    };
+
+    const setStartTime = (index : number, t : string) => {
+      const digits : string[] = t.split(':');
+      if (digits.length != 2)
+        return;
+      config.get(keyStartH).values[index] = digits[0].trim();
+      config.get(keyStartM).values[index] = digits[1].trim();
+    };
+
+    const setStopTime = (index : number, t : string) => {
+      const digits : string[] = t.split(':');
+      if (digits.length != 2)
+        return;
+      config.get(keyStopH).values[index] = digits[0].trim();
+      config.get(keyStopM).values[index] = digits[1].trim();
+    };
+
+    return (
+      <div id="{changeCounter}">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+            <CardTitle>{switcher_name}</CardTitle>
+        </CardHeader> 
+        <CardContent>
+            <ComboboxSwitcherMode mode={valueMode} onChange={(m : any) => { config.get(keyMode).values = [m]; setMode(m); }}/>
+            <div><br/></div>
+            {valueMode == "manual" && ( 
+              <div className="flex items-center space-x-2">
+                <Switch id={switcher_name} checked={config.get(keyOn).values[0] == "True"} onCheckedChange={(m : any) => { config.get(keyOn).values = [m]; handleChange("onoff"); }}/>
+                <Label htmlFor="airplane-mode">Manual on</Label>
+              </div>
+            )}
+            {valueMode == "schedule" && ( 
+              <div>
+                <Button className="w-full" onClick={() => 
+                  { 
+                    config.get(keyStartH)?.values.push("0");
+                    config.get(keyStartM)?.values.push("0")
+                    config.get(keyStopH)?.values.push("0")
+                    config.get(keyStopM)?.values.push("0")
+
+                    setChangeCounter(changeCounter + 1);
+                  }}>+</Button>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>start</TableHead>
+                      <TableHead>stop</TableHead>
+                      <TableHead></TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {config.get(keyStartH)?.values.map((startH : string, rowIndex : any) => (
+                      <TableRow key={rowIndex} >
+                        <TableCell key={getStartTime(rowIndex)}>{getStartTime(rowIndex)}</TableCell>
+                        <TableCell key={getStopTime(rowIndex)}>{getStopTime(rowIndex)}</TableCell>
+                        <TableCell key="del">
+                
+                          <Button variant="outline" className="w-0" onClick={() => { 
+                            setChangeCounter(changeCounter + 1);
+                            config.get(keyStartH)?.values.splice(rowIndex, 1);
+                            config.get(keyStartM)?.values.splice(rowIndex, 1);
+                            config.get(keyStopH)?.values.splice(rowIndex, 1);
+                            config.get(keyStopM)?.values.splice(rowIndex, 1);
+                            }}>-
+                          </Button>
+            
+                        </TableCell>
+                        <TableCell key="edit">
+                         
+                          <DialogEditRange start={getStartTime(rowIndex)} stop={getStopTime(rowIndex)} index={rowIndex} onChange={(start: string, stop : string, index : number)=>
+                            {
+                              setStartTime(index, start);
+                              setStopTime(index, stop);
+                              handleChange("range");
+                            }
+                          }></DialogEditRange>
+                        </TableCell>
+                      </TableRow>  
+                
+                    ))}
+                  </TableBody>
+                </Table>
+                
+              </div>
+            )}
+            
+        </CardContent>
+      </Card>
+      <br/>
+      </div>
+    );
+}
+
 
 export default SwitcherItem;
