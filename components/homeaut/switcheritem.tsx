@@ -55,6 +55,8 @@ import {
 
 import { Input } from "@/components/ui/input"
 
+import { timeToUserView, timeToConfigView } from "@/components/homeaut/univconfig"
+
 export type SwitcherItemCallback = (data: SwitcherItemDTO, switchInndex : number) => void;
 
 /*
@@ -76,51 +78,65 @@ interface RangeProps {
 }
 
 function DialogEditRange({start, stop, index, onChange} : RangeProps) {
-  const [startv, setStart] = React.useState(start)
-  const [stopv, setStop] = React.useState(stop)
   const [validdataStart, setValidStart] = React.useState(true)
   const [validdataStop, setValidStop] = React.useState(true)
 
   const isValidTime = (tim : string) => {
     const digits: string[] = tim.split(":");
     if (digits.length != 2)
-      return false;
-    let d = parseInt(digits[0], 10);
-    if (digits[0].length != 2 || d < 0 || d > 23)
-      return false;
-    d = parseInt(digits[1], 10);
-    if (digits[1].length != 2 || d < 0 || d > 59)
-      return false;
+      return { valid : false};
+    let d1 = parseInt(digits[0], 10);
+    if (d1 < 0 || d1 > 23)
+      return { valid : false};
+    let d2 = parseInt(digits[1], 10);
+    if (digits[1].length != 2 || d2 < 0 || d2 > 59)
+      return { valid : false};
 
-    return true;
+    return { valid : true, firstNumber: d1, secondNumber : d2};
   }
 
-  const handleChangeStart = () => {
+  /*const handleChangeStart = () => {
     const inputElement = document.getElementById('start_edit_box') as HTMLInputElement;
     let valid = isValidTime(inputElement.value);
-    setValidStart(valid); 
-    if ((startv != inputElement.value) && valid)
-    {
-      setStart(inputElement.value);
-    }
+    setValidStart(valid.valid); 
   };
 
   const handleChangeStop = () => {
     const inputElement = document.getElementById('stop_edit_box') as HTMLInputElement;
     let valid = isValidTime(inputElement.value);
-    setValidStop(valid); 
-    if ((stopv != inputElement.value) && valid)
-    {
-      setStop(inputElement.value);
-    }
-  };
+    setValidStop(valid.valid); 
+  };*/
 
-  useEffect(() => {
-    if ((startv != start) || (stopv != stop))
+
+  const validateAll = () => {
+    let inputElement = document.getElementById('start_edit_box') as HTMLInputElement;
+    let retStart = isValidTime(inputElement.value);
+    setValidStart(retStart.valid); 
+    inputElement = document.getElementById('stop_edit_box') as HTMLInputElement;
+    let retStop = isValidTime(inputElement.value);
+    setValidStop(retStop.valid); 
+    if (!retStart.valid || !retStop.valid)
+      return;
+    
+    var start : number = retStart.firstNumber * 60 + retStart.secondNumber;
+    var stop : number = retStop.firstNumber * 60 + retStop.secondNumber;
+    if (start > stop)
     {
-      onChange(startv, stopv, index);
+      setValidStart(false); 
+      setValidStop(false); 
     }
-  });
+
+  }
+
+  const handleOnSaveButton = () => {
+    if (!validdataStart || !validdataStop)
+      return;
+    let inputElement = document.getElementById('start_edit_box') as HTMLInputElement;
+    let startv = inputElement.value;
+    inputElement = document.getElementById('stop_edit_box') as HTMLInputElement;
+    let stopv = inputElement.value;
+    onChange(timeToConfigView(startv), timeToConfigView(stopv), index);
+  }
 
   return (
     <Dialog>
@@ -137,12 +153,12 @@ function DialogEditRange({start, stop, index, onChange} : RangeProps) {
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="name-1"  className={validdataStart ? "" : "text-red-700"}>Start</Label>
-              <Input id="start_edit_box" name="start" defaultValue={startv} onChange={handleChangeStart} 
+              <Input id="start_edit_box" name="start" defaultValue={timeToUserView(start)} onChange={validateAll} 
                 className={validdataStart ? "" : "border-red-700"}/>
             </div>
             <div className="grid gap-3">
               <Label htmlFor="username-1" className={validdataStop ? "" : "text-red-700"}>Stop</Label>
-              <Input id="stop_edit_box" name="stop" defaultValue={stopv} onChange={handleChangeStop} 
+              <Input id="stop_edit_box" name="stop" defaultValue={timeToUserView(stop)} onChange={validateAll} 
                 className={validdataStop ? "" : "border-red-700"}/>
             </div>
           </div>
@@ -151,7 +167,10 @@ function DialogEditRange({start, stop, index, onChange} : RangeProps) {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button disabled={!validdataStart && validdataStop} type="submit">Save changes</Button>
+              <Button disabled={!validdataStart && validdataStop} type="submit" onClick={() => 
+                { 
+                  handleOnSaveButton();
+                }}>Save changes</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -232,104 +251,16 @@ function ComboboxSwitcherMode({ mode, onChange }: ModeProps) {
     
   )
 }
-/*
-function SwitcherItem({ config, callback_data, switch_inndex }: SwitcherItemProps)
-{
-    const [valueMode, setMode] = React.useState(config.mode)
-    const [changeCounter, setChangeCounter] = React.useState(0)
-    const handleChange = async (event : any) => {
-      setChangeCounter(changeCounter + 1);
-    };
-
-    callback_data(config, switch_inndex);
-
-    return (
-      <div id="{changeCounter}">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-            <CardTitle>{config.switchname}</CardTitle>
-        </CardHeader> 
-        <CardContent>
-            <ComboboxSwitcherMode mode={valueMode} onChange={(m : any) => { config.mode = m; setMode(m); }}/>
-            <div><br/></div>
-            {valueMode == "manual" && ( 
-              <div className="flex items-center space-x-2">
-                <Switch id={config.switchname} checked={config.on} onCheckedChange={(m : any) => { config.on=m; callback_data(config, switch_inndex); handleChange("onoff"); }}/>
-                <Label htmlFor="airplane-mode">Manual on</Label>
-              </div>
-            )}
-
-            {valueMode == "schedule" && ( 
-              <div>
-                <Button className="w-full" onClick={() => 
-                  { 
-                    let newrange : string[] = [ "00:00", "00:00" ];
-                    config.ranges.push(newrange);
-                    let rowIndex = config.ranges.length - 1;
-                    let range = config.ranges[rowIndex];
-                    setChangeCounter(changeCounter + 1);
-                  }}>+</Button>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>start</TableHead>
-                      <TableHead>stop</TableHead>
-                      <TableHead></TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {config.ranges.map((range : string[], rowIndex : any) => (
-                      <TableRow key={rowIndex} >
-                        { range.map((cell : any) => (
-                              <TableCell key={cell}>{cell}</TableCell>
-                        ))}
-                        <TableCell key="del">
-                
-                          <Button variant="outline" className="w-0" onClick={() => { 
-                            setChangeCounter(changeCounter + 1);
-                            config.ranges.splice(rowIndex, 1);
-                            }}>-
-                          </Button>
-            
-                        </TableCell>
-                        <TableCell key="edit">
-                         
-                          <DialogEditRange start={range[0]} stop={range[1]} index={rowIndex} onChange={(start: string, stop : string, index : number)=>
-                            {
-                              config.ranges[index][0] = start;
-                              config.ranges[index][1] = stop;
-                              handleChange("range");
-                            }
-                          }></DialogEditRange>
-                        </TableCell>
-                      </TableRow>  
-                
-                    ))}
-                  </TableBody>
-                </Table>
-                
-              </div>
-            )}
-            
-        </CardContent>
-      </Card>
-      <br/>
-      </div>
-    );
-}
-
-export default SwitcherItem;
-*/
 
 import UnivValue from "@/components/homeaut/univconfigval"
 
 interface SwitcherItemProps {
   switcher_name : string;
   config: Map<string, UnivValue>;
+  caption : boolean;
 }
 
-function SwitcherItem({switcher_name, config}: SwitcherItemProps)
+function SwitcherItem({switcher_name, config, caption}: SwitcherItemProps)
 {
     let keyMode = switcher_name + "_mode";
     let keyOn =  switcher_name + "_on";
@@ -367,79 +298,99 @@ function SwitcherItem({switcher_name, config}: SwitcherItemProps)
       config.get(keyStopM).values[index] = digits[1].trim();
     };
 
+    const renderComponent = () =>
+    {
+      return <div>
+          <ComboboxSwitcherMode mode={valueMode} 
+            onChange={(m : any) => { 
+              config.get(keyMode).values = [m]; setMode(m); 
+              }
+          }/>
+          <div><br/></div>
+          {valueMode == "manual" && ( 
+            <div className="flex items-center space-x-2">
+              <Switch id={switcher_name} 
+                  checked={config.get(keyOn).values[0] == "True"} 
+                  onCheckedChange={(m : any) => { 
+                    config.get(keyOn).values = [m?"True":"False"]; handleChange("onoff"); 
+                  }}
+              />
+              <Label htmlFor="airplane-mode">Manual on</Label>
+            </div>
+          )}
+          {valueMode == "schedule" && ( 
+            <div>
+              <Button className="w-full" onClick={() => 
+                { 
+                  config.get(keyStartH).values.push("0");
+                  config.get(keyStartM).values.push("0")
+                  config.get(keyStopH).values.push("0")
+                  config.get(keyStopM).values.push("0")
+
+                  setChangeCounter(changeCounter + 1);
+                }}>+</Button>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>start</TableHead>
+                    <TableHead>stop</TableHead>
+                    <TableHead></TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {config.get(keyStartH)?.values.map((startH : string, rowIndex : any) => (
+                    <TableRow key={rowIndex}>
+                      <TableCell key={"begin" + rowIndex}>{timeToUserView(getStartTime(rowIndex))}</TableCell>
+                      <TableCell key={"end" + rowIndex}>{timeToUserView(getStopTime(rowIndex))}</TableCell>
+                      <TableCell key="del">
+              
+                        <Button variant="outline" className="w-0" onClick={() => { 
+                          setChangeCounter(changeCounter + 1);
+                          config.get(keyStartH)?.values.splice(rowIndex, 1);
+                          config.get(keyStartM)?.values.splice(rowIndex, 1);
+                          config.get(keyStopH)?.values.splice(rowIndex, 1);
+                          config.get(keyStopM)?.values.splice(rowIndex, 1);
+                          }}>-
+                        </Button>
+          
+                      </TableCell>
+                      <TableCell key="edit">              
+                        <DialogEditRange start={getStartTime(rowIndex)} 
+                          stop={getStopTime(rowIndex)} 
+                          index={rowIndex} 
+                          onChange={(start: string, stop : string, index : number)=> {
+                            setStartTime(index, start);
+                            setStopTime(index, stop);
+                            //handleChange("range");
+                            setChangeCounter(changeCounter + 1);
+                          }
+                        }></DialogEditRange>
+                      </TableCell>
+                    </TableRow>  
+              
+                  ))}
+                </TableBody>
+              </Table>
+              
+            </div>
+          )}
+      </div>;
+    }
+
     return (
       <div id="{changeCounter}">
-      <Card className="w-full max-w-sm">
+        {caption ? (<Card className="w-full max-w-sm">
         <CardHeader>
             <CardTitle>{switcher_name}</CardTitle>
         </CardHeader> 
         <CardContent>
-            <ComboboxSwitcherMode mode={valueMode} onChange={(m : any) => { config.get(keyMode).values = [m]; setMode(m); }}/>
-            <div><br/></div>
-            {valueMode == "manual" && ( 
-              <div className="flex items-center space-x-2">
-                <Switch id={switcher_name} checked={config.get(keyOn).values[0] == "True"} onCheckedChange={(m : any) => { config.get(keyOn).values = [m]; handleChange("onoff"); }}/>
-                <Label htmlFor="airplane-mode">Manual on</Label>
-              </div>
-            )}
-            {valueMode == "schedule" && ( 
-              <div>
-                <Button className="w-full" onClick={() => 
-                  { 
-                    config.get(keyStartH)?.values.push("0");
-                    config.get(keyStartM)?.values.push("0")
-                    config.get(keyStopH)?.values.push("0")
-                    config.get(keyStopM)?.values.push("0")
-
-                    setChangeCounter(changeCounter + 1);
-                  }}>+</Button>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>start</TableHead>
-                      <TableHead>stop</TableHead>
-                      <TableHead></TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {config.get(keyStartH)?.values.map((startH : string, rowIndex : any) => (
-                      <TableRow key={rowIndex} >
-                        <TableCell key={getStartTime(rowIndex)}>{getStartTime(rowIndex)}</TableCell>
-                        <TableCell key={getStopTime(rowIndex)}>{getStopTime(rowIndex)}</TableCell>
-                        <TableCell key="del">
-                
-                          <Button variant="outline" className="w-0" onClick={() => { 
-                            setChangeCounter(changeCounter + 1);
-                            config.get(keyStartH)?.values.splice(rowIndex, 1);
-                            config.get(keyStartM)?.values.splice(rowIndex, 1);
-                            config.get(keyStopH)?.values.splice(rowIndex, 1);
-                            config.get(keyStopM)?.values.splice(rowIndex, 1);
-                            }}>-
-                          </Button>
-            
-                        </TableCell>
-                        <TableCell key="edit">
-                         
-                          <DialogEditRange start={getStartTime(rowIndex)} stop={getStopTime(rowIndex)} index={rowIndex} onChange={(start: string, stop : string, index : number)=>
-                            {
-                              setStartTime(index, start);
-                              setStopTime(index, stop);
-                              handleChange("range");
-                            }
-                          }></DialogEditRange>
-                        </TableCell>
-                      </TableRow>  
-                
-                    ))}
-                  </TableBody>
-                </Table>
-                
-              </div>
-            )}
-            
+            {renderComponent()} 
         </CardContent>
-      </Card>
+      </Card>) : 
+      (<div>{renderComponent()}</div>)
+      }
+      
       <br/>
       </div>
     );

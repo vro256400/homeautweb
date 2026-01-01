@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import axios from 'axios'
 import React, { useState, useEffect } from 'react';
-import DeviceSwitcher from "@/components/homeaut/switcher"
+import Switcher from "@/components/homeaut/switcher"
 import Chickencoop from "@/components/homeaut/chickencoop"
 import { parseUnivConfig } from "@/components/homeaut/univconfig"
 //import postNewConfig from "@/components/homeaut/api"
@@ -55,8 +55,9 @@ function MyClientComponent() {
             <div key={item.name}>
               <Card className="w-full max-w-sm">
 
-                {item.type == "chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
-                
+                {item.type == "pw/chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
+                {item.type == "pw/switcher" && <Switcher config={parseUnivConfig(item.config)} devname={item.name}/> }
+
               </Card>
               <br/>
             </div>

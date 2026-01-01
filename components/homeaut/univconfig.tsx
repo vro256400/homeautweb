@@ -69,3 +69,31 @@ export function createUnivConfig(devices_config : DeviceConfigUniv[]) : string
     return JSON.stringify(pw_config);
 }
 
+export function timeToUserView(val : string) {
+    let kv: string[] = val.split(':');
+    if (kv.length != 2)
+      return val;
+    let h : string = kv[0].trim();
+    let m : string = kv[1].trim();
+    while(m.length < 2)
+      m = '0' + m;
+
+    return h + ":" + m;  
+};
+
+export function timeToConfigView(val : string) {
+    let kv: string[] = val.split(':');
+    if (kv.length != 2)
+      return val;
+    let h : string = kv[0].trim();
+    let m : string = kv[1].trim();
+    while(m.length > 1 && m[0] == '0')
+      m = m.substring(1, m.length);
+
+    while(h.length > 1 && h[0] == '0')
+      h = h.substring(1, h.length);
+
+    let res = h + ":" + m;
+
+    return res;  
+  };

@@ -28,9 +28,9 @@ function Chickencoop({devname, config} : ChickencoopProps)
           <CardTitle>{devname}</CardTitle>
       </CardHeader>    
 
-      <TempHumItem value_name="ht" config={config} ></TempHumItem>
-      <SwitcherItem switcher_name="svet" config={config} ></SwitcherItem>
-      <SwitcherItem switcher_name="otoplenie" config={config} ></SwitcherItem>
+      <TempHumItem value_name="ht" config={config}></TempHumItem>
+      <SwitcherItem switcher_name="svet" config={config} caption={true}></SwitcherItem>
+      <SwitcherItem switcher_name="otoplenie" config={config} caption={true}></SwitcherItem>
 
       <CardFooter className="flex-col gap-2">
         <Button type="submit" className="w-full" onClick={() => { 
