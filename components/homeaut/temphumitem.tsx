@@ -13,24 +13,34 @@ import UnivValue from "@/components/homeaut/univconfigval"
 interface TempHumItemProps {
   value_name : string;
   config: Map<string, UnivValue>;
+  caption : boolean;
 }
 
-function TempHumItem({value_name, config}: TempHumItemProps)
+function TempHumItem({value_name, config, caption}: TempHumItemProps)
 {
-    return (
-      <div id="{changeCounter}">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-            <CardTitle>{value_name}</CardTitle>
-        </CardHeader> 
-        <CardContent>
-            {config.get(value_name)?.values[0]}
+  const renderComponent = () =>
+    {
+      return <div>
+         {config.get(value_name)?.values[0]}
             <br/>
             {config.get(value_name)?.values[1]}
-        </CardContent>
-      </Card>
-      <br/>
-      </div>
+      </div>;
+    }
+    return (
+      <div id="{changeCounter}">
+              {caption ? (<Card className="w-full max-w-sm">
+              <CardHeader>
+                  <CardTitle>{value_name}</CardTitle>
+              </CardHeader> 
+              <CardContent>
+                  {renderComponent()} 
+              </CardContent>
+            </Card>) : 
+            (<div>{renderComponent()}</div>)
+            }
+            
+            <br/>
+            </div>
     );
 }
 

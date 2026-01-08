@@ -5,6 +5,7 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react';
 import Switcher from "@/components/homeaut/switcher"
 import Chickencoop from "@/components/homeaut/chickencoop"
+import TempHum from "@/components/homeaut/temphum"
 import { parseUnivConfig } from "@/components/homeaut/univconfig"
 //import postNewConfig from "@/components/homeaut/api"
 import {
@@ -57,7 +58,7 @@ function MyClientComponent() {
 
                 {item.type == "pw/chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
                 {item.type == "pw/switcher" && <Switcher config={parseUnivConfig(item.config)} devname={item.name}/> }
-
+                {item.type == "pw/temphum" &&  <TempHum config={parseUnivConfig(item.config)} devname={item.name}/> }
               </Card>
               <br/>
             </div>

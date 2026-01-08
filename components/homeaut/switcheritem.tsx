@@ -59,17 +59,6 @@ import { timeToUserView, timeToConfigView } from "@/components/homeaut/univconfi
 
 export type SwitcherItemCallback = (data: SwitcherItemDTO, switchInndex : number) => void;
 
-/*
-interface SwitcherItemProps {
-  config: SwitcherItemDTO;
-  callback_data : SwitcherItemCallback;  
-  switch_inndex : number;
-}
-
-interface SwitcherItemState {
-  count: number;
-}
-*/
 interface RangeProps {
   start: string;
   stop : string;
