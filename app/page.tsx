@@ -55,10 +55,10 @@ function MyClientComponent() {
           {parsedObject.map((item : any, devIndex : number) => (
             <div key={item.name}>
               <Card className="w-full max-w-sm">
-
                 {item.type == "pw/chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
                 {item.type == "pw/switcher" && <Switcher config={parseUnivConfig(item.config)} devname={item.name}/> }
                 {item.type == "pw/temphum" &&  <TempHum config={parseUnivConfig(item.config)} devname={item.name}/> }
+                {item.type == "pw/clock" &&  <div>Grid Power ON</div>}
               </Card>
               <br/>
             </div>
