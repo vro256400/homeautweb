@@ -21,9 +21,9 @@ function TempHumItem({value_name, config, caption}: TempHumItemProps)
   const renderComponent = () =>
     {
       return <div>
-         {config.get(value_name)?.values[0]}
+         {config.get(value_name)?.values[0]}°C
             <br/>
-            {config.get(value_name)?.values[1]}
+            {config.get(value_name)?.values[1]}%
       </div>;
     }
     return (
