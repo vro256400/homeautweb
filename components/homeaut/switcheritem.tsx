@@ -304,7 +304,7 @@ function SwitcherItem({switcher_name, config, caption}: SwitcherItemProps)
                     config.get(keyOn).values = [m?"True":"False"]; handleChange("onoff"); 
                   }}
               />
-              <Label htmlFor="airplane-mode">Manual on</Label>
+              <Label htmlFor="airplane-mode">ON</Label>
             </div>
           )}
           {valueMode == "schedule" && ( 
