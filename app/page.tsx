@@ -18,6 +18,24 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+/*
+        
+          {parsedObject.map((item : any, devIndex : number) => (
+            <div key={item.name}>
+              <Card className="w-full max-w-sm">
+                {item.type == "pw/chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
+                {item.type == "pw/switcher" && <Switcher config={parseUnivConfig(item.config)} devname={item.name}/> }
+                {item.type == "pw/temphum" &&  <TempHum config={parseUnivConfig(item.config)} devname={item.name}/> }
+                {item.type == "pw/clock" && <div>Grid Power ON</div>}
+                {item.type == "pw/heatingmanifold" && <div>Теплый пол. Заблокировано.</div>}
+              </Card>
+              <br/>
+            </div>
+          ))}
+          {!hasClock() && <Card className="w-full max-w-sm">Grid Power OFF</Card>}
+
+
+*/
 
 
 function MyClientComponent() {
@@ -50,22 +68,60 @@ function MyClientComponent() {
     parsedObject[devInndex].config = JSON.parse(newConfig);
   }
 
+  let hasClock = () =>
+  {
+      for(const dev of parsedObject)
+          if (dev.type == "pw/clock")
+              return true;
+      return false;
+  }
+  
+  let objectsChickencoop : any[] = []
+  parsedObject.forEach((item : any, devIndex : number) => {
+    if (item.type == "pw/chickencoop")
+      objectsChickencoop.push(item)
+  });
+
+  let objectsSwitcher : any[] = []
+  parsedObject.forEach((item : any, devIndex : number) => {
+    if (item.type == "pw/switcher")
+      objectsSwitcher.push(item)
+  });
+
+  let objectsTempHum : any[] = []
+  parsedObject.forEach((item : any, devIndex : number) => {
+    if (item.type == "pw/temphum")
+      objectsTempHum.push(item)
+  });
+
   return (
         <div align="center">
-          {parsedObject.map((item : any, devIndex : number) => (
+READ ONLY MODE<br/>
+Energy Saving Mode - some devices are switched off
+          {objectsTempHum.map((item : any, devIndex : number) => (
             <div key={item.name}>
               <Card className="w-full max-w-sm">
-                {item.type == "pw/chickencoop" && <Chickencoop config={parseUnivConfig(item.config)} devname={item.name}/> }
-                {item.type == "pw/switcher" && <Switcher config={parseUnivConfig(item.config)} devname={item.name}/> }
-                {item.type == "pw/temphum" &&  <TempHum config={parseUnivConfig(item.config)} devname={item.name}/> }
-                {item.type == "pw/clock" &&  <div>Grid Power ON</div>}
+                <TempHum config={parseUnivConfig(item.config)} devname={item.name}/>
               </Card>
               <br/>
             </div>
           ))}
 
-          <br/><br/><br/>Debug data from the server<br/>
-          {data}
+          {objectsSwitcher.map((item : any, devIndex : number) => (
+            <div key={item.name}>
+              <Card className="w-full max-w-sm">
+                <Switcher config={parseUnivConfig(item.config)} devname={item.name}/>
+              </Card>
+              <br/>
+            </div>
+          ))}
+          {hasClock() && <Card className="w-full max-w-sm">Grid Power ON</Card>}
+          {!hasClock() && <Card className="w-full max-w-sm">Grid Power OFF</Card>}
+           
+          <a href="https://map.ukrainealarm.com">Alarms</a>
+          <br/>
+          <a href="https://www.dtek-krem.com.ua/ua/shutdowns">Grid Power Accidents</a>
+          
         </div>);
 }
 
