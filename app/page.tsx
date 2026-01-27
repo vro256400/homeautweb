@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import Switcher from "@/components/homeaut/switcher"
 import Chickencoop from "@/components/homeaut/chickencoop"
 import TempHum from "@/components/homeaut/temphum"
+import Clock from "@/components/homeaut/clock"
 import { parseUnivConfig } from "@/components/homeaut/univconfig"
 //import postNewConfig from "@/components/homeaut/api"
 import {
@@ -94,6 +95,12 @@ function MyClientComponent() {
       objectsTempHum.push(item)
   });
 
+  let objectsClock : any[] = []
+  parsedObject.forEach((item : any, devIndex : number) => {
+    if (item.type == "pw/clock")
+      objectsClock.push(item)
+  });
+
   return (
         <div align="center">
 READ ONLY MODE<br/>
@@ -115,12 +122,24 @@ Energy Saving Mode - some devices are switched off
               <br/>
             </div>
           ))}
+
           {hasClock() && <Card className="w-full max-w-sm">Grid Power ON</Card>}
           {!hasClock() && <Card className="w-full max-w-sm">Grid Power OFF</Card>}
            
           <a href="https://map.ukrainealarm.com">Alarms</a>
           <br/>
           <a href="https://www.dtek-krem.com.ua/ua/shutdowns">Grid Power Accidents</a>
+          <br/>
+          
+          {objectsClock.map((item : any, devIndex : number) => (
+            <div key={item.name}>
+              <Card className="w-full max-w-sm">
+                <Clock config={parseUnivConfig(item.config)} devname={item.name}/>
+              </Card>
+              <br/>
+            </div>
+          ))}
+
           
         </div>);
 }
