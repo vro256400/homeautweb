@@ -7,6 +7,7 @@ import Switcher from "@/components/homeaut/switcher"
 import Chickencoop from "@/components/homeaut/chickencoop"
 import TempHum from "@/components/homeaut/temphum"
 import Clock from "@/components/homeaut/clock"
+import DeviceTracker from "@/components/homeaut/devicetracker"
 import { parseUnivConfig } from "@/components/homeaut/univconfig"
 //import postNewConfig from "@/components/homeaut/api"
 import {
@@ -123,8 +124,12 @@ Energy Saving Mode - some devices are switched off
             </div>
           ))}
 
-          {hasClock() && <Card className="w-full max-w-sm">Grid Power ON</Card>}
-          {!hasClock() && <Card className="w-full max-w-sm">Grid Power OFF</Card>}
+          {hasClock() && <Card className="w-full max-w-sm">Grid Power ON
+            <DeviceTracker devname="clock" />
+            </Card>}
+          {!hasClock() && <Card className="w-full max-w-sm">Grid Power OFF
+            <DeviceTracker devname="clock" />
+            </Card>}
            
           <a href="https://map.ukrainealarm.com">Alarms</a>
           <br/>
